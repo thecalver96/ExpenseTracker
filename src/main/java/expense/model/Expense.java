@@ -1,4 +1,5 @@
 package expense.model;
+import javafx.collections.ObservableArray;
 import lombok.*;
 import org.checkerframework.checker.units.qual.C;
 
@@ -11,7 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Data
-public class Expense {
+public class Expense{
 
     public enum Type{
         INCOME,
