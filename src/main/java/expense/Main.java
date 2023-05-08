@@ -17,6 +17,26 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args) {
 
+        DatabaseConnection injector = DatabaseConnection.getInstance();
+        ExpenseDao expenseDao = injector.getInjector().getInstance(ExpenseDao.class);
+
+
+        Expense e1 = Expense.builder()
+                .title("elso")
+                .cost(123.0)
+                .date(LocalDate.now())
+                .type(Expense.Type.EXPENSE)
+                .build();
+        Expense e2 = Expense.builder()
+                .title("masodik")
+                .cost(321.0)
+                .date(LocalDate.of(2012, 8, 1))
+                .type(Expense.Type.INCOME)
+                .build();
+
+
+        expenseDao.persist(e1);
+        expenseDao.persist(e2);
 
 
 

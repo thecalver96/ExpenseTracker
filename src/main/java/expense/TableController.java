@@ -22,31 +22,20 @@ public class TableController {
 
     @FXML
     public TableView<Expense> FXTable;
+    @FXML
     public TableColumn<Expense, String> fTitle;
+    @FXML
     public TableColumn<Expense, Integer> fId;
+    @FXML
     public TableColumn<Expense, Expense.Type> fType;
+    @FXML
     public TableColumn<Expense, LocalDate> fDate;
+    @FXML
     public TableColumn<Expense, Double> fCost;
 
     public void initialize() {
-        Injector injector = Guice.createInjector(new PersistenceModule("ExpenseTracker"));
-        ExpenseDao expenseDao = injector.getInstance(ExpenseDao.class);
-        Expense e1 = Expense.builder()
-                .title("elso")
-                .cost(123.0)
-                .date(LocalDate.now())
-                .type(Expense.Type.EXPENSE)
-                .build();
-        Expense e2 = Expense.builder()
-                .title("masodik")
-                .cost(321.0)
-                .date(LocalDate.of(2012, 8, 1))
-                .type(Expense.Type.INCOME)
-                .build();
-
-
-        expenseDao.persist(e1);
-        expenseDao.persist(e2);
+        DatabaseConnection injector = DatabaseConnection.getInstance();
+        ExpenseDao expenseDao = injector.getInjector().getInstance(ExpenseDao.class);
 
         List<Expense> list =  expenseDao.findAll();
         ObservableList<Expense> list2 = FXCollections.observableArrayList(
