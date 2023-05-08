@@ -18,7 +18,16 @@ public class Expense{
         INCOME,
         EXPENSE
     }
-
+    public enum MainCategory{
+        HOME,
+        FOOD,
+        SHOPPING,
+        CAR,
+        DRESSING,
+        ENTERTAINMENT,
+        PERSONAL,
+        OTHER
+    }
 
     @Id
     @GeneratedValue
@@ -35,6 +44,9 @@ public class Expense{
 
     @Column(nullable = false)
     private Type type;
+
+    @Column(nullable = false)
+    private MainCategory category;
 
 
 }
