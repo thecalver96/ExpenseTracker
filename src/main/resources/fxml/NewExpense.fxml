@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="fNewExpense" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="329.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="expense.NewExpenseController">
+   <children>
+      <Button fx:id="fSubmitButton" layoutX="139.0" layoutY="423.0" mnemonicParsing="false" onAction="#submitExpense" text="Submit" />
+      <DatePicker fx:id="fDate" layoutX="19.0" layoutY="331.0" />
+      <ChoiceBox fx:id="fCategory" layoutX="17.0" layoutY="198.0" prefWidth="150.0" />
+      <TextField fx:id="fTitle" layoutX="17.0" layoutY="58.0" />
+      <TextField fx:id="fAmount" layoutX="17.0" layoutY="266.0" />
+      <ChoiceBox fx:id="fType" layoutX="17.0" layoutY="119.0" prefWidth="150.0" />
+      <Label layoutX="14.0" layoutY="34.0" text="Title:" />
+      <Label layoutX="17.0" layoutY="102.0" text="Type:" />
+      <Label layoutX="19.0" layoutY="166.0" text="Category:" />
+      <Label layoutX="19.0" layoutY="237.0" text="Amount" />
+      <Label layoutX="19.0" layoutY="302.0" text="Date" />
+      <Label fx:id="fErrorLine" layoutX="91.0" layoutY="385.0" text="Please provide all arguments" visible="false" />
+   </children>
+</AnchorPane>
