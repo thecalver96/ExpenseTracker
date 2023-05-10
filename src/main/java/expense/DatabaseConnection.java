@@ -2,6 +2,7 @@ package expense;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import expense.model.Expense;
 import guice.PersistenceModule;
 import lombok.Getter;
 
@@ -11,6 +12,8 @@ public final class DatabaseConnection {
 
     private static DatabaseConnection INSTANCE;
     private final Injector injector;
+
+
 
     DatabaseConnection() {
         this.injector = Guice.createInjector(new PersistenceModule("ExpenseTracker"));
@@ -24,5 +27,5 @@ public final class DatabaseConnection {
         return INSTANCE;
     }
 
-    // getters and setters
+
 }

@@ -1,12 +1,14 @@
 package expense.model;
-import javafx.collections.ObservableArray;
 import lombok.*;
-import org.checkerframework.checker.units.qual.C;
-
 import javax.persistence.*;
 import java.time.LocalDate;
 
 
+/*
+*
+* Expense entity class
+* Represents one 'Expense' as transactions
+*/
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

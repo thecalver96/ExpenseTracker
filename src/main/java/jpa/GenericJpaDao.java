@@ -1,6 +1,7 @@
 package jpa;
 
 import java.lang.reflect.ParameterizedType;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,5 +57,6 @@ public abstract class GenericJpaDao<T> {
     public void update(T entity) {
         entityManager.merge(entity);
     }
+
 
 }
