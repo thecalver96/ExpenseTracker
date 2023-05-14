@@ -1,12 +1,12 @@
 package expense;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import expense.model.Expense;
 import expense.model.ExpenseDao;
-import guice.PersistenceModule;
+import expense.model.ExpenseDaoInt;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,18 +19,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import lombok.NonNull;
-import net.bytebuddy.asm.Advice;
+import org.controlsfx.control.CheckComboBox;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import java.util.List;
-import java.util.stream.DoubleStream;
+import java.util.*;
 
-
-public class OverviewController {
+public class OverviewController implements QueryTable{
 
 
     @FXML
@@ -50,36 +47,32 @@ public class OverviewController {
     public TextField fBalance;
     public TextField fSpent;
     public PieChart fPieChart;
-    public TableView<Expense> FXQueryTable;
-
-    @FXML
-    public TableColumn<Expense, String> fTitle1;
-    @FXML
-    public TableColumn<Expense, Integer> fId1;
-    @FXML
-    public TableColumn<Expense, Expense.Type> fType1;
-    @FXML
-    public TableColumn<Expense, LocalDate> fDate1;
-    @FXML
-    public TableColumn<Expense, Double> fCost1;
-    @FXML
-    public TableColumn<Expense, Expense.MainCategory> fCategory1;
 
     public DatePicker fStartDate;
     public DatePicker fEndDate;
     public Button fSearchButton;
     public TextField fSearchBar;
+    public Button fClearButton;
+    public Button fAddNewExpenseButton;
+    public CheckComboBox<Expense.MainCategory> fCombobox;
 
     private ExpenseDao expenseDao;
 
     public void initialize() {
 
-        expenseDao = initDB();
+        expenseDao = (ExpenseDao) initDB();
 
 
-        ObservableList<Expense> list = getAllExpenses();
-        setFXTable(list);
-        // setFXQueryTable(list);
+        ObservableList<Expense> allTransactions = getAllTransactions();
+        setFXTable(allTransactions);
+
+        ObservableList<Expense.MainCategory> categories = FXCollections.observableArrayList(
+                Expense.MainCategory.values()
+        );
+
+        fCombobox.getItems().addAll(categories);
+        fCombobox.getCheckModel().checkAll();
+
 
         fBalance.setText(String.valueOf(expenseDao.getBalance()));
         fSpent.setText(String.valueOf(expenseDao.getSumOfExpenses()));
@@ -91,14 +84,14 @@ public class OverviewController {
 
     }
 
-    public static ExpenseDao initDB() {
+    public static ExpenseDaoInt initDB() {
         return DatabaseConnection.getInstance()
                 .getInjector()
                 .getInstance(ExpenseDao.class);
 
     }
 
-    private ObservableList<Expense> getAllExpenses() {
+    private ObservableList<Expense> getAllTransactions() {
         return FXCollections.observableArrayList(
                 expenseDao.findAll()
         );
@@ -107,11 +100,6 @@ public class OverviewController {
     private void setFXTable(ObservableList<Expense> list) {
         setTableFields(fId, fCost, fTitle, fDate, fType, fCategory);
         FXTable.setItems(list);
-    }
-
-    private void setFXQueryTable(ObservableList<Expense> list) {
-        setTableFields(fId1, fCost1, fTitle1, fDate1, fType1, fCategory1);
-        FXQueryTable.setItems(list);
     }
 
     private void setTableFields(TableColumn<Expense, Integer> fId, TableColumn<Expense, Double> fCost, TableColumn<Expense, String> fTitle,
@@ -127,16 +115,32 @@ public class OverviewController {
     }
 
 
-    public void runSearch(ActionEvent actionEvent) throws IOException {
+    public void onAction(ActionEvent actionEvent) throws IOException {
         Button button = (Button) actionEvent.getSource();
 
         if (button.getId().equals("fSearchButton")) {
-            ObservableList<Expense> list = FXCollections.observableArrayList(
-                    expenseDao.findBetweenDates(fStartDate.getValue(), fEndDate.getValue()));
-            setFXQueryTable(list);
+
+            ObservableList<Expense> list1 = FXCollections.observableArrayList(
+                        expenseDao.getSearch(fSearchBar.getText(),fStartDate.getValue(),fEndDate.getValue(),
+                                fCombobox.getCheckModel().getCheckedItems())
+                    );
+            setFXTable(list1);
+
+
+        }
+        if(button.getId().equals("fClearButton")){
+            ObservableList<Expense> list =FXCollections.observableArrayList(expenseDao.findAll());
+            fCombobox.getCheckModel().checkAll();
+            fStartDate.setValue(LocalDate.now().minusDays(7));
+            fEndDate.setValue(LocalDate.now());
+            fSearchBar.setText("");
+            setFXTable(list);
+
+        }
+
+        if(button.getId().equals("fAddNewExpenseButton")){
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
             changeScene(stage,null);
-
         }
     }
 
@@ -151,32 +155,18 @@ public class OverviewController {
 
     private void setPieChart() {
 
-        ObservableList<PieChart.Data> d = FXCollections.observableArrayList(
-                new PieChart.Data("HOME", expenseDao.findAll()
-                        .stream()
-                        .filter(expense -> expense.getCategory()
-                                .equals(Expense.MainCategory.HOME))
-                        .mapToDouble(Expense::getCost)
-                        .sum()
-                        / expenseDao.findAll()
-                        .stream()
-                        .flatMapToDouble(expense -> DoubleStream.of(expense.getCost()))
-                        .sum()
+        ObservableList<PieChart.Data> a = FXCollections.observableArrayList();
 
-                ),
-                new PieChart.Data("FOOD", expenseDao.findAll()
-                        .stream()
-                        .filter(expense -> expense.getCategory()
-                                .equals(Expense.MainCategory.FOOD))
-                        .mapToDouble(Expense::getCost)
-                        .sum()
-                        / expenseDao.findAll()
-                        .stream()
-                        .flatMapToDouble(expense -> DoubleStream.of(expense.getCost()))
-                        .sum()
-                )
-        );
-        fPieChart.setData(d);
+        Arrays.stream(Expense.MainCategory.values()).forEach(
+                category -> {
+
+                    if(!expenseDao.getExpenseByCategory(category).equals(0.0))
+                        a.add(new PieChart.Data(String.valueOf(category), expenseDao.getExpenseByCategory(category)));
+                });
+
+
+
+        fPieChart.setData(a);
 
     }
 

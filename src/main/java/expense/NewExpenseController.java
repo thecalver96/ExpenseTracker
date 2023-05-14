@@ -3,6 +3,7 @@ package expense;
 import com.sun.javafx.fxml.FXMLLoaderHelper;
 import expense.model.Expense;
 import expense.model.ExpenseDao;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,17 +34,15 @@ public class NewExpenseController  {
     public AnchorPane fNewExpense;
 
     private ExpenseDao expenseDao;
+    private Expense selected;
 
 
     public void initialize() throws IOException {
-        expenseDao = OverviewController.initDB();
+        expenseDao =(ExpenseDao) OverviewController.initDB();
 
 
-
-        ObservableList<Expense.Type> l = FXCollections.observableArrayList(Expense.Type.values());
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
-
 
     }
 
@@ -101,6 +100,14 @@ public class NewExpenseController  {
 
         return data;
     }
+    private void setFieldValues(Expense e){
 
+        fTitle.setText(String.valueOf(e.getTitle()));
+        fType.setValue(e.getType());
+        fCategory.setValue(e.getCategory());
+        fAmount.setText(String.valueOf(e.getCost()));
+        fDate.setValue(e.getDate());
+
+    }
 
 }

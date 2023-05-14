@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
-public class ExpenseDao extends GenericJpaDao<Expense> {
+public class ExpenseDao extends GenericJpaDao<Expense> implements ExpenseDaoInt{
     @Transactional
     public List<Expense> findBetweenDates(LocalDate startDate, LocalDate endDate){
         TypedQuery<Expense> typedQuery = (TypedQuery<Expense>) entityManager.createQuery(
@@ -16,10 +16,11 @@ public class ExpenseDao extends GenericJpaDao<Expense> {
                         + " e WHERE e.date >=: startDate and e.date <=: endDate", entityClass);
         typedQuery.setParameter("startDate", startDate);
         typedQuery.setParameter("endDate", endDate);
+
         return typedQuery.getResultList();
     }
 
-    public double getBalance() {
+    public Double getBalance() {
 
      return findAll()
                         .stream()
@@ -38,6 +39,30 @@ public class ExpenseDao extends GenericJpaDao<Expense> {
                 .filter(expense -> expense.getType().equals(Expense.Type.EXPENSE))
                 .mapToDouble(Expense::getCost)
                 .sum();
+    }
+
+
+    public Double getExpenseByCategory(Expense.MainCategory category){
+        return findAll().stream()
+                .filter(expense -> expense.getType().equals(Expense.Type.EXPENSE)
+                &&
+                        expense.getCategory().equals(category))
+                .mapToDouble(Expense::getCost)
+                .sum()
+                ;
+
+    }
+    @Transactional
+    public List<Expense> getSearch(String searchTerm, LocalDate startDate, LocalDate endDate, List<Expense.MainCategory> categories){
+        TypedQuery<Expense> typedQuery = (TypedQuery<Expense>) entityManager.createQuery(
+                "SELECT e FROM " + entityClass.getSimpleName()
+                        + " e WHERE e.title like '%" + searchTerm +"%' and ( e.date >=: startDate and e.date <=: endDate) and e.category IN :categories", entityClass);
+        typedQuery.setParameter("startDate", startDate);
+        typedQuery.setParameter("endDate", endDate);
+        typedQuery.setParameter("categories", categories);
+
+
+        return typedQuery.getResultList();
     }
 
 }
