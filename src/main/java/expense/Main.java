@@ -2,8 +2,10 @@ package expense;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import expense.controller.DatabaseConnection;
 import expense.model.Expense;
 import expense.model.ExpenseDao;
+import expense.model.ExpenseDaoImpl;
 import guice.PersistenceModule;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
@@ -21,23 +23,9 @@ public class Main {
 
         /* DB connection singleton */
         DatabaseConnection injector = DatabaseConnection.getInstance();
-        ExpenseDao expenseDao = injector.getInjector().getInstance(ExpenseDao.class);
+        ExpenseDaoImpl expenseDaoImpl = injector.getInjector().getInstance(ExpenseDaoImpl.class);
 
         /* Some mock data to check on */
-        Expense e1 = Expense.builder()
-                .title("elso")
-                .cost(500.0)
-                .date(LocalDate.now())
-                .type(Expense.Type.EXPENSE)
-                .category(Expense.MainCategory.HOME)
-                .build();
-        Expense e2 = Expense.builder()
-                .title("masodik")
-                .cost(500.0)
-                .date(LocalDate.of(2012, 8, 1))
-                .type(Expense.Type.EXPENSE)
-                .category(Expense.MainCategory.FOOD)
-                .build();
 
         for(int i = 0; i < 30; i++){
             Expense expense = Expense.builder()
@@ -48,12 +36,9 @@ public class Main {
                     .category(Expense.MainCategory.values()[i%8])
                     .build();
 
-            expenseDao.persist(expense);
+            expenseDaoImpl.persist(expense);
         }
 
-
-        expenseDao.persist(e1);
-        expenseDao.persist(e2);
 
         /* ********************* */
 

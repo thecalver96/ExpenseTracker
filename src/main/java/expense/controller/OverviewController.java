@@ -1,9 +1,7 @@
-package expense;
+package expense.controller;
 
 import expense.model.Expense;
-import expense.model.ExpenseDao;
-import expense.model.ExpenseDaoInt;
-
+import expense.model.ExpenseDaoImpl;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -56,11 +54,11 @@ public class OverviewController implements QueryTable{
     public Button fAddNewExpenseButton;
     public CheckComboBox<Expense.MainCategory> fCombobox;
 
-    private ExpenseDao expenseDao;
+    private ExpenseDaoImpl expenseDaoImpl;
 
     public void initialize() {
 
-        expenseDao = (ExpenseDao) initDB();
+        expenseDaoImpl =  initDB();
 
 
         ObservableList<Expense> allTransactions = getAllTransactions();
@@ -74,8 +72,8 @@ public class OverviewController implements QueryTable{
         fCombobox.getCheckModel().checkAll();
 
 
-        fBalance.setText(String.valueOf(expenseDao.getBalance()));
-        fSpent.setText(String.valueOf(expenseDao.getSumOfExpenses()));
+        fBalance.setText(String.valueOf(expenseDaoImpl.getBalance()));
+        fSpent.setText(String.valueOf(expenseDaoImpl.getSumOfExpenses()));
 
         fStartDate.setValue(LocalDate.now().minusDays(7));
         fEndDate.setValue(LocalDate.now());
@@ -84,16 +82,16 @@ public class OverviewController implements QueryTable{
 
     }
 
-    public static ExpenseDaoInt initDB() {
+    public static ExpenseDaoImpl initDB() {
         return DatabaseConnection.getInstance()
                 .getInjector()
-                .getInstance(ExpenseDao.class);
+                .getInstance(ExpenseDaoImpl.class);
 
     }
 
     private ObservableList<Expense> getAllTransactions() {
         return FXCollections.observableArrayList(
-                expenseDao.findAll()
+                expenseDaoImpl.findAll()
         );
     }
 
@@ -121,7 +119,7 @@ public class OverviewController implements QueryTable{
         if (button.getId().equals("fSearchButton")) {
 
             ObservableList<Expense> list1 = FXCollections.observableArrayList(
-                        expenseDao.getSearch(fSearchBar.getText(),fStartDate.getValue(),fEndDate.getValue(),
+                        expenseDaoImpl.getSearch(fSearchBar.getText(),fStartDate.getValue(),fEndDate.getValue(),
                                 fCombobox.getCheckModel().getCheckedItems())
                     );
             setFXTable(list1);
@@ -129,7 +127,7 @@ public class OverviewController implements QueryTable{
 
         }
         if(button.getId().equals("fClearButton")){
-            ObservableList<Expense> list =FXCollections.observableArrayList(expenseDao.findAll());
+            ObservableList<Expense> list =FXCollections.observableArrayList(expenseDaoImpl.findAll());
             fCombobox.getCheckModel().checkAll();
             fStartDate.setValue(LocalDate.now().minusDays(7));
             fEndDate.setValue(LocalDate.now());
@@ -160,8 +158,8 @@ public class OverviewController implements QueryTable{
         Arrays.stream(Expense.MainCategory.values()).forEach(
                 category -> {
 
-                    if(!expenseDao.getExpenseByCategory(category).equals(0.0))
-                        a.add(new PieChart.Data(String.valueOf(category), expenseDao.getExpenseByCategory(category)));
+                    if(!expenseDaoImpl.getExpenseByCategory(category).equals(0.0))
+                        a.add(new PieChart.Data(String.valueOf(category), expenseDaoImpl.getExpenseByCategory(category)));
                 });
 
 

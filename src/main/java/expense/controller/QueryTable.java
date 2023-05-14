@@ -1,4 +1,4 @@
-package expense;
+package expense.controller;
 
 import javafx.event.ActionEvent;
 import javafx.scene.input.MouseEvent;

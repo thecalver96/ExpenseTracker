@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="fNewExpense" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="329.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="expense.NewExpenseController">
+<AnchorPane fx:id="fNewExpense" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="329.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="expense.controller.NewExpenseController">
    <children>
       <Button fx:id="fSubmitButton" layoutX="139.0" layoutY="423.0" mnemonicParsing="false" onAction="#submitExpense" text="Submit" />
       <DatePicker fx:id="fDate" layoutX="19.0" layoutY="331.0" />

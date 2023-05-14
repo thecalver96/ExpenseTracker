@@ -1,15 +1,10 @@
-package expense;
+package expense.controller;
 
-import com.sun.javafx.fxml.FXMLLoaderHelper;
 import expense.model.Expense;
 import expense.model.ExpenseDao;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import expense.model.ExpenseDaoImpl;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -17,9 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -33,12 +26,12 @@ public class NewExpenseController  {
     public Label fErrorLine;
     public AnchorPane fNewExpense;
 
-    private ExpenseDao expenseDao;
+    private ExpenseDaoImpl expenseDaoImpl;
     private Expense selected;
 
 
     public void initialize() throws IOException {
-        expenseDao =(ExpenseDao) OverviewController.initDB();
+        expenseDaoImpl = OverviewController.initDB();
 
 
         fType.getItems().addAll(Expense.Type.values());
@@ -62,7 +55,7 @@ public class NewExpenseController  {
                         .cost(Double.parseDouble(fAmount.getText()))
                         .date(LocalDate.parse(String.valueOf(fDate.getValue())))
                         .build();
-                expenseDao.persist(e);
+                expenseDaoImpl.persist(e);
 
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 Parent root = FXMLLoader.load(getClass().getResource("/fxml/OverviewScene.fxml"));

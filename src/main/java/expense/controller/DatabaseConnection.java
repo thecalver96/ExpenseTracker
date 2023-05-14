@@ -1,8 +1,7 @@
-package expense;
+package expense.controller;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import expense.model.Expense;
 import guice.PersistenceModule;
 import lombok.Getter;
 
