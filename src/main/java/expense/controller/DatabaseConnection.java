@@ -2,6 +2,7 @@ package expense.controller;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import expense.model.ExpenseDaoImpl;
 import guice.PersistenceModule;
 import lombok.Getter;
 
@@ -23,6 +24,12 @@ public final class DatabaseConnection {
         }
 
         return INSTANCE;
+    }
+    public static ExpenseDaoImpl initDB() {
+        return DatabaseConnection.getInstance()
+                .getInjector()
+                .getInstance(ExpenseDaoImpl.class);
+
     }
 
 

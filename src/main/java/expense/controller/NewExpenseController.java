@@ -13,6 +13,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -34,12 +35,15 @@ public class NewExpenseController {
     public Label fErrorLine;
     @FXML
     public AnchorPane fNewExpense;
+
     private ExpenseDaoImpl expenseDaoImpl;
 
     private Expense selected;
 
     public void initialize() {
-        expenseDaoImpl = OverviewController.initDB();
+
+        expenseDaoImpl = DatabaseConnection.initDB();
+
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
 

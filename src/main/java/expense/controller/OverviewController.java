@@ -22,6 +22,7 @@ import lombok.NonNull;
 import org.controlsfx.control.CheckComboBox;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -66,12 +67,12 @@ public class OverviewController implements QueryTable {
     @FXML
     public CheckComboBox<Expense.MainCategory> fCombobox;
 
+
     private ExpenseDaoImpl expenseDaoImpl;
 
     public void initialize() {
 
-        expenseDaoImpl = initDB();
-
+        expenseDaoImpl = DatabaseConnection.initDB();
 
         ObservableList<Expense> allTransactions = getAllTransactions();
         setFXTable(allTransactions);
@@ -94,12 +95,7 @@ public class OverviewController implements QueryTable {
 
     }
 
-    public static ExpenseDaoImpl initDB() {
-        return DatabaseConnection.getInstance()
-                .getInjector()
-                .getInstance(ExpenseDaoImpl.class);
 
-    }
 
     private ObservableList<Expense> getAllTransactions() {
         return FXCollections.observableArrayList(
@@ -181,8 +177,6 @@ public class OverviewController implements QueryTable {
     public void modifyEntry(@NonNull MouseEvent mouseEvent) throws IOException {
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2) {
-
-
             if (FXTable.getSelectionModel().getSelectedItem() != null) {
                 Expense selected = FXTable.getSelectionModel().getSelectedItem();
                 SelectedDataModel.setSelectedExpense(selected);
