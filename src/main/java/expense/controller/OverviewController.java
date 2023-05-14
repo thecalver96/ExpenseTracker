@@ -1,5 +1,6 @@
 package expense.controller;
 
+import com.google.inject.Injector;
 import expense.model.Expense;
 import expense.model.ExpenseDaoImpl;
 import expense.model.SelectedDataModel;
@@ -17,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lombok.NonNull;
 import org.controlsfx.control.CheckComboBox;
@@ -67,12 +69,16 @@ public class OverviewController implements QueryTable {
     @FXML
     public CheckComboBox<Expense.MainCategory> fCombobox;
 
-
     private ExpenseDaoImpl expenseDaoImpl;
 
     public void initialize() {
 
-        expenseDaoImpl = DatabaseConnection.initDB();
+
+
+       expenseDaoImpl = DatabaseConnection.initDB();
+       // expenseDaoImpl = ExpenseDaoImpl.initDB();
+
+
 
         ObservableList<Expense> allTransactions = getAllTransactions();
         setFXTable(allTransactions);
@@ -103,9 +109,9 @@ public class OverviewController implements QueryTable {
         );
     }
 
-    private void setFXTable(ObservableList<Expense> list) {
+    private void setFXTable(ObservableList<Expense> tableContent) {
         setTableFields(fId, fCost, fTitle, fDate, fType, fCategory);
-        FXTable.setItems(list);
+        FXTable.setItems(tableContent);
     }
 
     private void setTableFields(@NonNull TableColumn<Expense, Integer> fId, @NonNull TableColumn<Expense, Double> fCost, @NonNull TableColumn<Expense, String> fTitle,
@@ -126,11 +132,11 @@ public class OverviewController implements QueryTable {
 
         if (button.getId().equals("fSearchButton")) {
 
-            ObservableList<Expense> list1 = FXCollections.observableArrayList(
+            ObservableList<Expense> queryList = FXCollections.observableArrayList(
                     expenseDaoImpl.getSearch(fSearchBar.getText(), fStartDate.getValue(), fEndDate.getValue(),
                             fCombobox.getCheckModel().getCheckedItems())
             );
-            setFXTable(list1);
+            setFXTable(queryList);
 
 
         }
@@ -145,32 +151,44 @@ public class OverviewController implements QueryTable {
         }
 
         if (button.getId().equals("fAddNewExpenseButton")) {
-            Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            changeScene(stage);
+
+            newExpenseModal();
+
         }
     }
 
-    private void changeScene(@NonNull Stage stage) throws IOException {
 
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/NewExpense.fxml")));
-        stage.setScene(new Scene(root));
-        stage.show();
+    private void newExpenseModal() throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewExpense.fxml"));
+        Parent root = loader.load();
+        Stage newExpenseStage = new Stage();
+        newExpenseStage.initModality(Modality.APPLICATION_MODAL); // Set the modality to APPLICATION_MODAL
+        newExpenseStage.setTitle("New Expense");
+        newExpenseStage.setScene(new Scene(root));
+
+
+        newExpenseStage.setOnHiding(event -> {
+
+            initialize();
+        });
+
+        newExpenseStage.showAndWait();
     }
-
 
     private void setPieChart() {
 
-        ObservableList<PieChart.Data> a = FXCollections.observableArrayList();
+        ObservableList<PieChart.Data> piechartData = FXCollections.observableArrayList();
 
         Arrays.stream(Expense.MainCategory.values()).forEach(
                 category -> {
 
                     if (!expenseDaoImpl.getExpenseByCategory(category).equals(0.0))
-                        a.add(new PieChart.Data(String.valueOf(category), expenseDaoImpl.getExpenseByCategory(category)));
+                        piechartData.add(new PieChart.Data(String.valueOf(category), expenseDaoImpl.getExpenseByCategory(category)));
                 });
 
 
-        fPieChart.setData(a);
+            fPieChart.setData(piechartData);
+
 
     }
 
@@ -180,8 +198,10 @@ public class OverviewController implements QueryTable {
             if (FXTable.getSelectionModel().getSelectedItem() != null) {
                 Expense selected = FXTable.getSelectionModel().getSelectedItem();
                 SelectedDataModel.setSelectedExpense(selected);
-                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                changeScene(stage);
+                newExpenseModal();
+
+                //Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                //changeScene(stage);
             }
         }
     }

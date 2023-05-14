@@ -9,7 +9,7 @@
 
 <AnchorPane fx:id="fNewExpense" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="473.0" prefWidth="329.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="expense.controller.NewExpenseController">
    <children>
-      <Button fx:id="fSubmitButton" layoutX="139.0" layoutY="423.0" mnemonicParsing="false" onAction="#submitExpense" text="Submit" />
+      <Button fx:id="fSubmitButton" layoutX="70.0" layoutY="421.0" mnemonicParsing="false" onAction="#submitExpense" text="Submit" />
       <DatePicker fx:id="fDate" layoutX="19.0" layoutY="331.0" />
       <ChoiceBox fx:id="fCategory" layoutX="17.0" layoutY="198.0" prefWidth="150.0" />
       <TextField fx:id="fTitle" layoutX="17.0" layoutY="58.0" />
@@ -21,5 +21,7 @@
       <Label layoutX="19.0" layoutY="237.0" text="Amount" />
       <Label layoutX="19.0" layoutY="302.0" text="Date" />
       <Label fx:id="fErrorLine" layoutX="91.0" layoutY="385.0" text="Please provide all arguments" visible="false" />
+      <Button fx:id="fCancelButton" layoutX="139.0" layoutY="421.0" mnemonicParsing="false" onAction="#submitExpense" text="Cancel" />
+      <Button fx:id="fDeleteButton" layoutX="218.0" layoutY="421.0" mnemonicParsing="false" onAction="#submitExpense" style="-fx-background-color: red;" text="Delete" textFill="WHITE" visible="false" />
    </children>
 </AnchorPane>

@@ -1,6 +1,10 @@
 package expense.model;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import guice.PersistenceModule;
 import jpa.GenericJpaDao;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
@@ -8,6 +12,13 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 
 public class ExpenseDaoImpl extends GenericJpaDao<Expense> implements ExpenseDao {
+
+
+    public static ExpenseDaoImpl initDB(){
+
+        Injector injector = Guice.createInjector(new PersistenceModule("ExpenseTracker"));
+        return injector.getInstance(ExpenseDaoImpl.class);
+    }
 
     @Override
     public List<Expense> findBetweenDates(LocalDate startDate, LocalDate endDate) {

@@ -35,6 +35,10 @@ public class NewExpenseController {
     public Label fErrorLine;
     @FXML
     public AnchorPane fNewExpense;
+    @FXML
+    public Button fDeleteButton;
+    @FXML
+    public Button fCancelButton;
 
     private ExpenseDaoImpl expenseDaoImpl;
 
@@ -43,21 +47,23 @@ public class NewExpenseController {
     public void initialize() {
 
         expenseDaoImpl = DatabaseConnection.initDB();
-
+    //    expenseDaoImpl = ExpenseDaoImpl.initDB();
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
 
         selected = SelectedDataModel.getSelectedExpense();
         SelectedDataModel.setSelectedExpense(null);
-        if(selected != null)
-           setFieldValues(selected);
-
+        if(selected != null) {
+            setFieldValues(selected);
+            fDeleteButton.setVisible(true);
+        }
 
     }
 
 
     public void submitExpense(ActionEvent actionEvent) throws IOException {
         Button button = (Button) actionEvent.getSource();
+        Stage stage = (Stage) button.getScene().getWindow();
 
         if (button.getId().equals("fSubmitButton")) {
 
@@ -65,12 +71,14 @@ public class NewExpenseController {
 
             if (isFormCompleted(data)) {
                 updateOrCreateExpense(selected);
+                stage.close();
 
+                /*
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
                 Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/OverviewScene.fxml")));
                 stage.setScene(new Scene(root));
                 stage.show();
-
+*/
             } else {
                 fErrorLine.setVisible(true);
 
@@ -78,6 +86,18 @@ public class NewExpenseController {
 
 
         }
+        if (button.getId().equals("fCancelButton")) {
+            stage.close();
+        }
+        if (button.getId().equals("fDeleteButton")) {
+
+            removeExpense();
+            stage.close();
+        }
+    }
+
+    private void removeExpense() {
+        expenseDaoImpl.remove(selected);
     }
 
     private boolean isFormCompleted(List<String> data) {

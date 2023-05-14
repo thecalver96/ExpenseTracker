@@ -4,7 +4,6 @@ import expense.controller.DatabaseConnection;
 import expense.model.Expense;
 
 import expense.model.ExpenseDaoImpl;
-
 import javafx.application.Application;
 
 import java.time.LocalDate;
@@ -14,8 +13,10 @@ public class Main {
     public static void main(String[] args) {
 
         /* DB connection singleton */
+
         DatabaseConnection injector = DatabaseConnection.getInstance();
-        ExpenseDaoImpl expenseDaoImpl = injector.getInjector().getInstance(ExpenseDaoImpl.class);
+       ExpenseDaoImpl expenseDaoImpl = injector.getInjector().getInstance(ExpenseDaoImpl.class);
+
 
         /* Some mock data to check on */
 
