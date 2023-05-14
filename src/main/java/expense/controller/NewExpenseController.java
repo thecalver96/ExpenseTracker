@@ -1,8 +1,8 @@
 package expense.controller;
 
 import expense.model.Expense;
-import expense.model.ExpenseDao;
 import expense.model.ExpenseDaoImpl;
+import expense.model.SelectedDataModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -36,11 +36,18 @@ public class NewExpenseController {
     public AnchorPane fNewExpense;
     private ExpenseDaoImpl expenseDaoImpl;
 
+    private Expense selected;
+
     public void initialize() {
         expenseDaoImpl = OverviewController.initDB();
-
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
+
+        selected = SelectedDataModel.getSelectedExpense();
+        SelectedDataModel.setSelectedExpense(null);
+        if(selected != null)
+           setFieldValues(selected);
+
 
     }
 
@@ -53,17 +60,10 @@ public class NewExpenseController {
             List<String> data = getFieldValues();
 
             if (isFormCompleted(data)) {
-                Expense e = Expense.builder()
-                        .title(fTitle.getText())
-                        .type(fType.getValue())
-                        .category(fCategory.getValue())
-                        .cost(Double.parseDouble(fAmount.getText()))
-                        .date(LocalDate.parse(String.valueOf(fDate.getValue())))
-                        .build();
-                expenseDaoImpl.persist(e);
+                updateOrCreateExpense(selected);
 
                 Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                Parent root = FXMLLoader.load(getClass().getResource("/fxml/OverviewScene.fxml"));
+                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/OverviewScene.fxml")));
                 stage.setScene(new Scene(root));
                 stage.show();
 
@@ -106,6 +106,30 @@ public class NewExpenseController {
         fAmount.setText(String.valueOf(e.getCost()));
         fDate.setValue(e.getDate());
 
+    }
+
+    private void updateOrCreateExpense(Expense e){
+
+        if(e == null) {
+            e = Expense.builder()
+                    .title(fTitle.getText())
+                    .type(fType.getValue())
+                    .category(fCategory.getValue())
+                    .cost(Double.parseDouble(fAmount.getText()))
+                    .date(LocalDate.parse(String.valueOf(fDate.getValue())))
+                    .build();
+
+        }
+        else {
+            e.setCategory(fCategory.getValue());
+            e.setTitle(fTitle.getText());
+            e.setCost(Double.parseDouble(fAmount.getText()));
+            e.setDate(LocalDate.parse(String.valueOf(fDate.getValue())));
+            e.setType(fType.getValue());
+
+
+        }
+        expenseDaoImpl.persist(e);
     }
 
 }

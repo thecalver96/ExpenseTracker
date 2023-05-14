@@ -2,6 +2,7 @@ package expense.controller;
 
 import expense.model.Expense;
 import expense.model.ExpenseDaoImpl;
+import expense.model.SelectedDataModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -149,15 +150,14 @@ public class OverviewController implements QueryTable {
 
         if (button.getId().equals("fAddNewExpenseButton")) {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            changeScene(stage, null);
+            changeScene(stage);
         }
     }
 
-    private void changeScene(@NonNull Stage stage, @Nullable Expense e) throws IOException {
+    private void changeScene(@NonNull Stage stage) throws IOException {
 
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/NewExpense.fxml")));
         stage.setScene(new Scene(root));
-        stage.setUserData(e);
         stage.show();
     }
 
@@ -185,8 +185,9 @@ public class OverviewController implements QueryTable {
 
             if (FXTable.getSelectionModel().getSelectedItem() != null) {
                 Expense selected = FXTable.getSelectionModel().getSelectedItem();
+                SelectedDataModel.setSelectedExpense(selected);
                 Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                changeScene(stage, selected);
+                changeScene(stage);
             }
         }
     }
