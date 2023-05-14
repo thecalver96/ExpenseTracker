@@ -4,6 +4,7 @@ import expense.model.Expense;
 import expense.model.ExpenseDao;
 import expense.model.ExpenseDaoImpl;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,23 +17,27 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
-public class NewExpenseController  {
+public class NewExpenseController {
+    @FXML
     public Button fSubmitButton;
+    @FXML
     public DatePicker fDate;
+    @FXML
     public ChoiceBox<Expense.MainCategory> fCategory;
+    @FXML
     public TextField fTitle;
+    @FXML
     public TextField fAmount;
+    @FXML
     public ChoiceBox<Expense.Type> fType;
+    @FXML
     public Label fErrorLine;
+    @FXML
     public AnchorPane fNewExpense;
-
     private ExpenseDaoImpl expenseDaoImpl;
-    private Expense selected;
 
-
-    public void initialize() throws IOException {
+    public void initialize() {
         expenseDaoImpl = OverviewController.initDB();
-
 
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
@@ -43,11 +48,11 @@ public class NewExpenseController  {
     public void submitExpense(ActionEvent actionEvent) throws IOException {
         Button button = (Button) actionEvent.getSource();
 
-        if(button.getId().equals("fSubmitButton")){
+        if (button.getId().equals("fSubmitButton")) {
 
             List<String> data = getFieldValues();
 
-            if(isFormCompleted(data)){
+            if (isFormCompleted(data)) {
                 Expense e = Expense.builder()
                         .title(fTitle.getText())
                         .type(fType.getValue())
@@ -62,8 +67,7 @@ public class NewExpenseController  {
                 stage.setScene(new Scene(root));
                 stage.show();
 
-            }
-            else {
+            } else {
                 fErrorLine.setVisible(true);
 
             }
@@ -72,7 +76,7 @@ public class NewExpenseController  {
         }
     }
 
-    private boolean isFormCompleted(List<String> data){
+    private boolean isFormCompleted(List<String> data) {
         for (String datum : data) {
             if (datum == null || datum.isEmpty() || datum.equals("null")) {
 
@@ -83,7 +87,7 @@ public class NewExpenseController  {
         return true;
     }
 
-    private List<String> getFieldValues(){
+    private List<String> getFieldValues() {
         List<String> data = new ArrayList<>();
         data.add(fTitle.getText());
         data.add(String.valueOf(fType.getValue()));
@@ -93,7 +97,8 @@ public class NewExpenseController  {
 
         return data;
     }
-    private void setFieldValues(Expense e){
+
+    private void setFieldValues(Expense e) {
 
         fTitle.setText(String.valueOf(e.getTitle()));
         fType.setValue(e.getType());

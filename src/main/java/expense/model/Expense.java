@@ -1,26 +1,29 @@
 package expense.model;
+
 import lombok.*;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
 
 /*
-*
-* Expense entity class
-* Represents one 'Expense' as transactions
-*/
+ *
+ * Expense entity class
+ * Represents one 'Expense' as transactions
+ */
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class Expense{
+public class Expense {
 
-    public enum Type{
+    public enum Type {
         INCOME,
         EXPENSE
     }
-    public enum MainCategory{
+
+    public enum MainCategory {
         HOME,
         FOOD,
         SHOPPING,

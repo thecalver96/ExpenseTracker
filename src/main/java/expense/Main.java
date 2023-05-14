@@ -1,20 +1,12 @@
 package expense;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import expense.controller.DatabaseConnection;
 import expense.model.Expense;
-import expense.model.ExpenseDao;
-import expense.model.ExpenseDaoImpl;
-import guice.PersistenceModule;
-import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
-import javafx.scene.control.Tab;
-import lombok.experimental.SuperBuilder;
 
-import java.io.UncheckedIOException;
+import expense.model.ExpenseDaoImpl;
+
+import javafx.application.Application;
+
 import java.time.LocalDate;
 
 

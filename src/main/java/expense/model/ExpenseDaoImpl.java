@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.DoubleStream;
 
-public class ExpenseDaoImpl extends GenericJpaDao<Expense> implements ExpenseDao{
+public class ExpenseDaoImpl extends GenericJpaDao<Expense> implements ExpenseDao {
 
     @Override
     public List<Expense> findBetweenDates(LocalDate startDate, LocalDate endDate) {
@@ -59,7 +59,7 @@ public class ExpenseDaoImpl extends GenericJpaDao<Expense> implements ExpenseDao
     public List<Expense> getSearch(String searchTerm, LocalDate startDate, LocalDate endDate, List<Expense.MainCategory> categories) {
         TypedQuery<Expense> typedQuery = (TypedQuery<Expense>) entityManager.createQuery(
                 "SELECT e FROM " + entityClass.getSimpleName()
-                        + " e WHERE e.title like '%" + searchTerm +"%' and ( e.date >=: startDate and e.date <=: endDate) and e.category IN :categories", entityClass);
+                        + " e WHERE e.title like '%" + searchTerm + "%' and ( e.date >=: startDate and e.date <=: endDate) and e.category IN :categories", entityClass);
         typedQuery.setParameter("startDate", startDate);
         typedQuery.setParameter("endDate", endDate);
         typedQuery.setParameter("categories", categories);

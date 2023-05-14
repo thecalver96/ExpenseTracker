@@ -13,13 +13,12 @@ public final class DatabaseConnection {
     private final Injector injector;
 
 
-
     DatabaseConnection() {
         this.injector = Guice.createInjector(new PersistenceModule("ExpenseTracker"));
     }
 
     public static DatabaseConnection getInstance() {
-        if(INSTANCE == null) {
+        if (INSTANCE == null) {
             INSTANCE = new DatabaseConnection();
         }
 

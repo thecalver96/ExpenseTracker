@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import lombok.NonNull;
 import org.controlsfx.control.CheckComboBox;
 
 import javax.annotation.Nullable;
@@ -25,7 +26,7 @@ import java.time.LocalDate;
 
 import java.util.*;
 
-public class OverviewController implements QueryTable{
+public class OverviewController implements QueryTable {
 
 
     @FXML
@@ -42,23 +43,33 @@ public class OverviewController implements QueryTable{
     public TableColumn<Expense, Double> fCost;
     @FXML
     public TableColumn<Expense, Expense.MainCategory> fCategory;
+    @FXML
     public TextField fBalance;
+    @FXML
     public TextField fSpent;
+    @FXML
     public PieChart fPieChart;
 
+    @FXML
     public DatePicker fStartDate;
+    @FXML
     public DatePicker fEndDate;
+    @FXML
     public Button fSearchButton;
+    @FXML
     public TextField fSearchBar;
+    @FXML
     public Button fClearButton;
+    @FXML
     public Button fAddNewExpenseButton;
+    @FXML
     public CheckComboBox<Expense.MainCategory> fCombobox;
 
     private ExpenseDaoImpl expenseDaoImpl;
 
     public void initialize() {
 
-        expenseDaoImpl =  initDB();
+        expenseDaoImpl = initDB();
 
 
         ObservableList<Expense> allTransactions = getAllTransactions();
@@ -100,34 +111,34 @@ public class OverviewController implements QueryTable{
         FXTable.setItems(list);
     }
 
-    private void setTableFields(TableColumn<Expense, Integer> fId, TableColumn<Expense, Double> fCost, TableColumn<Expense, String> fTitle,
-                                TableColumn<Expense, LocalDate> fDate, TableColumn<Expense, Expense.Type> fType,
-                                TableColumn<Expense, Expense.MainCategory> fCategory) {
+    private void setTableFields(@NonNull TableColumn<Expense, Integer> fId, @NonNull TableColumn<Expense, Double> fCost, @NonNull TableColumn<Expense, String> fTitle,
+                                @NonNull TableColumn<Expense, LocalDate> fDate, @NonNull TableColumn<Expense, Expense.Type> fType,
+                                @NonNull TableColumn<Expense, Expense.MainCategory> fCategory) {
 
-        fId.setCellValueFactory(new PropertyValueFactory<Expense, Integer>("id"));
-        fCost.setCellValueFactory(new PropertyValueFactory<Expense, Double>("cost"));
-        fTitle.setCellValueFactory(new PropertyValueFactory<Expense, String>("title"));
-        fDate.setCellValueFactory(new PropertyValueFactory<Expense, LocalDate>("date"));
-        fType.setCellValueFactory(new PropertyValueFactory<Expense, Expense.Type>("type"));
-        fCategory.setCellValueFactory(new PropertyValueFactory<Expense, Expense.MainCategory>("category"));
+        fId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        fCost.setCellValueFactory(new PropertyValueFactory<>("cost"));
+        fTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        fDate.setCellValueFactory(new PropertyValueFactory<>("date"));
+        fType.setCellValueFactory(new PropertyValueFactory<>("type"));
+        fCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
     }
 
 
-    public void onAction(ActionEvent actionEvent) throws IOException {
+    public void onAction(@NonNull ActionEvent actionEvent) throws IOException {
         Button button = (Button) actionEvent.getSource();
 
         if (button.getId().equals("fSearchButton")) {
 
             ObservableList<Expense> list1 = FXCollections.observableArrayList(
-                        expenseDaoImpl.getSearch(fSearchBar.getText(),fStartDate.getValue(),fEndDate.getValue(),
-                                fCombobox.getCheckModel().getCheckedItems())
-                    );
+                    expenseDaoImpl.getSearch(fSearchBar.getText(), fStartDate.getValue(), fEndDate.getValue(),
+                            fCombobox.getCheckModel().getCheckedItems())
+            );
             setFXTable(list1);
 
 
         }
-        if(button.getId().equals("fClearButton")){
-            ObservableList<Expense> list =FXCollections.observableArrayList(expenseDaoImpl.findAll());
+        if (button.getId().equals("fClearButton")) {
+            ObservableList<Expense> list = FXCollections.observableArrayList(expenseDaoImpl.findAll());
             fCombobox.getCheckModel().checkAll();
             fStartDate.setValue(LocalDate.now().minusDays(7));
             fEndDate.setValue(LocalDate.now());
@@ -136,15 +147,15 @@ public class OverviewController implements QueryTable{
 
         }
 
-        if(button.getId().equals("fAddNewExpenseButton")){
+        if (button.getId().equals("fAddNewExpenseButton")) {
             Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-            changeScene(stage,null);
+            changeScene(stage, null);
         }
     }
 
-    private void changeScene(Stage stage, @Nullable Expense e) throws IOException {
+    private void changeScene(@NonNull Stage stage, @Nullable Expense e) throws IOException {
 
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/NewExpense.fxml"));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/NewExpense.fxml")));
         stage.setScene(new Scene(root));
         stage.setUserData(e);
         stage.show();
@@ -158,24 +169,23 @@ public class OverviewController implements QueryTable{
         Arrays.stream(Expense.MainCategory.values()).forEach(
                 category -> {
 
-                    if(!expenseDaoImpl.getExpenseByCategory(category).equals(0.0))
+                    if (!expenseDaoImpl.getExpenseByCategory(category).equals(0.0))
                         a.add(new PieChart.Data(String.valueOf(category), expenseDaoImpl.getExpenseByCategory(category)));
                 });
-
 
 
         fPieChart.setData(a);
 
     }
 
-    public void modifyEntry(MouseEvent mouseEvent) throws IOException {
+    public void modifyEntry(@NonNull MouseEvent mouseEvent) throws IOException {
 
         if (mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getClickCount() == 2) {
 
 
-            if(FXTable.getSelectionModel().getSelectedItem() != null ) {
+            if (FXTable.getSelectionModel().getSelectedItem() != null) {
                 Expense selected = FXTable.getSelectionModel().getSelectedItem();
-                Stage stage =(Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
+                Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
                 changeScene(stage, selected);
             }
         }
