@@ -72,13 +72,7 @@ public class OverviewController implements QueryTable {
     private ExpenseDaoImpl expenseDaoImpl;
 
     public void initialize() {
-
-
-
-       expenseDaoImpl = DatabaseConnection.initDB();
-       // expenseDaoImpl = ExpenseDaoImpl.initDB();
-
-
+        expenseDaoImpl = DatabaseConnection.initDB();
 
         ObservableList<Expense> allTransactions = getAllTransactions();
         setFXTable(allTransactions);
@@ -89,11 +83,8 @@ public class OverviewController implements QueryTable {
 
         fCombobox.getItems().addAll(categories);
         fCombobox.getCheckModel().checkAll();
-
-
         fBalance.setText(String.valueOf(expenseDaoImpl.getBalance()));
         fSpent.setText(String.valueOf(expenseDaoImpl.getSumOfExpenses()));
-
         fStartDate.setValue(LocalDate.now().minusDays(7));
         fEndDate.setValue(LocalDate.now());
 
@@ -150,11 +141,8 @@ public class OverviewController implements QueryTable {
 
         }
 
-        if (button.getId().equals("fAddNewExpenseButton")) {
-
+        if (button.getId().equals("fAddNewExpenseButton"))
             newExpenseModal();
-
-        }
     }
 
 
@@ -166,13 +154,20 @@ public class OverviewController implements QueryTable {
         newExpenseStage.setTitle("New Expense");
         newExpenseStage.setScene(new Scene(root));
 
-
-        newExpenseStage.setOnHiding(event -> {
-
-            initialize();
-        });
-
         newExpenseStage.showAndWait();
+        refreshData();
+
+    }
+
+    private void refreshData() {
+        ObservableList<Expense> allTransactions = getAllTransactions();
+        setFXTable(allTransactions);
+        FXTable.refresh();
+
+        fBalance.setText(String.valueOf(expenseDaoImpl.getBalance()));
+        fSpent.setText(String.valueOf(expenseDaoImpl.getSumOfExpenses()));
+
+        
     }
 
     private void setPieChart() {
@@ -200,8 +195,6 @@ public class OverviewController implements QueryTable {
                 SelectedDataModel.setSelectedExpense(selected);
                 newExpenseModal();
 
-                //Stage stage = (Stage) ((Node) mouseEvent.getSource()).getScene().getWindow();
-                //changeScene(stage);
             }
         }
     }

@@ -12,14 +12,6 @@ import java.util.List;
 import java.util.stream.DoubleStream;
 
 public class ExpenseDaoImpl extends GenericJpaDao<Expense> implements ExpenseDao {
-
-
-    public static ExpenseDaoImpl initDB(){
-
-        Injector injector = Guice.createInjector(new PersistenceModule("ExpenseTracker"));
-        return injector.getInstance(ExpenseDaoImpl.class);
-    }
-
     @Override
     public List<Expense> findBetweenDates(LocalDate startDate, LocalDate endDate) {
         TypedQuery<Expense> typedQuery = (TypedQuery<Expense>) entityManager.createQuery(

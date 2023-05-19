@@ -47,13 +47,13 @@ public class NewExpenseController {
     public void initialize() {
 
         expenseDaoImpl = DatabaseConnection.initDB();
-    //    expenseDaoImpl = ExpenseDaoImpl.initDB();
+        //    expenseDaoImpl = ExpenseDaoImpl.initDB();
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
 
         selected = SelectedDataModel.getSelectedExpense();
         SelectedDataModel.setSelectedExpense(null);
-        if(selected != null) {
+        if (selected != null) {
             setFieldValues(selected);
             fDeleteButton.setVisible(true);
         }
@@ -67,23 +67,16 @@ public class NewExpenseController {
 
         if (button.getId().equals("fSubmitButton")) {
 
-            List<String> data = getFieldValues();
-
-            if (isFormCompleted(data)) {
-                updateOrCreateExpense(selected);
+            if (fieldValidation()) {
+                if ((selected == null)) {
+                    createExpense(null);
+                } else {
+                    updateExpense(selected);
+                }
                 stage.close();
 
-                /*
-                Stage stage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
-                Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/fxml/OverviewScene.fxml")));
-                stage.setScene(new Scene(root));
-                stage.show();
-*/
-            } else {
+            } else
                 fErrorLine.setVisible(true);
-
-            }
-
 
         }
         if (button.getId().equals("fCancelButton")) {
@@ -96,17 +89,34 @@ public class NewExpenseController {
         }
     }
 
+    private boolean fieldValidation() {
+
+            return  isValidTitle() && isValidCost() && isFormCompleted();
+    }
+
+    private boolean isValidTitle(){
+        return fTitle.getText().length() > 0 && fTitle.getText().length() < 40;
+    }
+
+    private boolean isValidCost(){
+        try {
+            Double.parseDouble(fAmount.getText());
+            return true;
+        }catch (NumberFormatException exception){
+            return false;
+        }
+    }
+
     private void removeExpense() {
         expenseDaoImpl.remove(selected);
     }
 
-    private boolean isFormCompleted(List<String> data) {
-        for (String datum : data) {
-            if (datum == null || datum.isEmpty() || datum.equals("null")) {
+    private boolean isFormCompleted() {
 
+        List<String> fieldValues = getFieldValues();
+        for (String value : fieldValues) {
+            if (value == null || value.isEmpty() || value.equals("null"))
                 return false;
-            }
-
         }
         return true;
     }
@@ -132,28 +142,27 @@ public class NewExpenseController {
 
     }
 
-    private void updateOrCreateExpense(Expense e){
+    private void updateExpense(Expense expense) {
 
-        if(e == null) {
-            e = Expense.builder()
-                    .title(fTitle.getText())
-                    .type(fType.getValue())
-                    .category(fCategory.getValue())
-                    .cost(Double.parseDouble(fAmount.getText()))
-                    .date(LocalDate.parse(String.valueOf(fDate.getValue())))
-                    .build();
+        expense.setTitle(fTitle.getText());
+        expense.setCategory(fCategory.getValue());
+        expense.setType(fType.getValue());
+        expense.setCost(Double.parseDouble(fAmount.getText()));
+        expense.setDate(LocalDate.parse(String.valueOf(fDate.getValue())));
 
-        }
-        else {
-            e.setCategory(fCategory.getValue());
-            e.setTitle(fTitle.getText());
-            e.setCost(Double.parseDouble(fAmount.getText()));
-            e.setDate(LocalDate.parse(String.valueOf(fDate.getValue())));
-            e.setType(fType.getValue());
+        expenseDaoImpl.persist(expense);
+    }
 
+    private void createExpense(Expense expense) {
+        expense = Expense.builder()
+                .title(fTitle.getText())
+                .type(fType.getValue())
+                .category(fCategory.getValue())
+                .cost(Double.parseDouble(fAmount.getText()))
+                .date(LocalDate.parse(String.valueOf(fDate.getValue())))
+                .build();
 
-        }
-        expenseDaoImpl.persist(e);
+        expenseDaoImpl.persist(expense);
     }
 
 }
