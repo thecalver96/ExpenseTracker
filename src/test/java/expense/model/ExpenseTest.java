@@ -10,7 +10,7 @@ public class ExpenseTest {
         // Arrange
         Integer id = 1;
         String title = "Expense 1";
-        Double cost = 10.0;
+        double cost = 10.0;
         LocalDate date = LocalDate.now();
         Expense.Type type = Expense.Type.EXPENSE;
         Expense.MainCategory category = Expense.MainCategory.FOOD;
@@ -43,12 +43,12 @@ public class ExpenseTest {
         expense.setCost(999.9);
         expense.setCategory(Expense.MainCategory.CAR);
         expense.setType(Expense.Type.INCOME);
-        expense.setDate(LocalDate.of(2000,01,01));
+        expense.setDate(LocalDate.of(2000,1,1));
 
         Assertions.assertEquals(100, expense.getId());
         Assertions.assertEquals("Expense 1 Modified", expense.getTitle());
         Assertions.assertEquals(999.9, expense.getCost(), 0.01); //kerekítés miatt
-        Assertions.assertEquals(LocalDate.of(2000,01,01), expense.getDate());
+        Assertions.assertEquals(LocalDate.of(2000,1,1), expense.getDate());
         Assertions.assertEquals(Expense.Type.INCOME, expense.getType());
         Assertions.assertEquals(Expense.MainCategory.CAR, expense.getCategory());
 
