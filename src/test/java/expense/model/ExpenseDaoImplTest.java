@@ -1,45 +1,68 @@
 package expense.model;
 
-import junit.framework.TestCase;
+
+import com.google.inject.Injector;
+import expense.controller.DatabaseConnection;
 import org.junit.Before;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ExpenseDaoImplTest extends TestCase {
+import java.util.List;
 
-    ExpenseDaoImpl expenseDaoImpl = new ExpenseDaoImpl();
-    @Before
-    public void generateData(){
-        for(int i = 0; i < 30; i++){
-            Expense expense = Expense.builder()
-                    .title("title" + i)
-                    .cost(500.0 + i*10)
-                    .date(LocalDate.of(2000+i, 8, 1))
-                    .type(i%2==0?Expense.Type.EXPENSE: Expense.Type.INCOME)
-                    .category(Expense.MainCategory.values()[i%8])
-                    .build();
+import static org.mockito.Mockito.*;
+public class ExpenseDaoImplTest {
 
-            expenseDaoImpl.persist(expense);
-        }
+    @InjectMocks
+    private ExpenseDaoImpl expenseDao;
 
+    @Mock
+    private DatabaseConnection databaseConnectionMock;
 
-    }
-    public void testFindBetweenDates() {
-
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
     }
 
-    public void testGetBalance() {
-    assertEquals(150.0,expenseDaoImpl.getBalance());
-    }
+    @Test
+    public void testFindAllExpenses() {
+        // Arrange
+        Expense expense1 = Expense.builder()
+                .id(1)
+                .title("first")
+                .date(LocalDate.now())
+                .type(Expense.Type.EXPENSE)
+                .cost(123.1123)
+                .category(Expense.MainCategory.DRESSING)
+                .build();
+        Expense expense2 = Expense.builder()
+                .id(2)
+                .title("second")
+                .date(LocalDate.now().minusDays(12))
+                .type(Expense.Type.INCOME)
+                .cost(1999.1123)
+                .category(Expense.MainCategory.ENTERTAINMENT)
+                .build();
+        List<Expense> expectedExpenses = List.of(expense1, expense2);
 
-    public void testGetSumOfExpenses() {
-    }
+        // Act
+        when(databaseConnectionMock.getInjector().getInstance(ExpenseDaoImpl.class)).thenReturn(expenseDao);
+        when(expenseDao.findAll()).thenReturn(expectedExpenses);
+        List<Expense> actualExpenses = expenseDao.findAll();
 
-    public void testGetExpenseByCategory() {
-    }
+        // Assert
+        Assertions.assertEquals(expectedExpenses.size(), actualExpenses.size());
+        Assertions.assertEquals(expectedExpenses.get(0), actualExpenses.get(0));
+        Assertions.assertEquals(expectedExpenses.get(1), actualExpenses.get(1));
 
-    public void testGetSearch() {
+        verify(databaseConnectionMock, times(1)).getInjector().getInstance(ExpenseDaoImpl.class);
+        verify(expenseDao, times(1)).findAll();
+        verifyNoMoreInteractions(databaseConnectionMock, expenseDao);
     }
 }

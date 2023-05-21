@@ -1,7 +1,7 @@
 package jpa;
 
 import java.lang.reflect.ParameterizedType;
-import java.time.LocalDate;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -11,10 +11,7 @@ import javax.persistence.TypedQuery;
 
 
 import com.google.inject.persist.Transactional;
-import expense.controller.ExpenseUpdateEvent;
-import expense.model.ExpenseDaoImpl;
-import javafx.event.Event;
-import javafx.event.EventTarget;
+
 
 
 public abstract class GenericJpaDao<T> {

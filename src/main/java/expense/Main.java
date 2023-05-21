@@ -2,7 +2,6 @@ package expense;
 
 import expense.controller.DatabaseConnection;
 import expense.model.Expense;
-
 import expense.model.ExpenseDaoImpl;
 import javafx.application.Application;
 
