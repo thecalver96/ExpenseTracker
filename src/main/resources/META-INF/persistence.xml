@@ -11,4 +11,15 @@
             <property name="hibernate.use_sql_comments" value="true"/>
         </properties>
     </persistence-unit>
+    <persistence-unit name="Test">
+        <properties>
+            <property name="javax.persistence.jdbc.driver" value="${db.driver}"/>
+            <property name="javax.persistence.jdbc.url" value="${db.url}"/>
+            <property name="javax.persistence.jdbc.user" value="${db.user}"/>
+            <property name="javax.persistence.jdbc.password" value="${db.password}"/>
+            <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.use_sql_comments" value="true"/>
+        </properties>
+    </persistence-unit>
 </persistence>
