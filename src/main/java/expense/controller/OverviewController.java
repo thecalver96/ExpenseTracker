@@ -1,6 +1,5 @@
 package expense.controller;
 
-import com.google.inject.Injector;
 import expense.model.Expense;
 import expense.model.ExpenseDaoImpl;
 import expense.model.SelectedDataModel;
@@ -10,7 +9,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
@@ -23,12 +21,11 @@ import javafx.stage.Stage;
 import lombok.NonNull;
 import org.controlsfx.control.CheckComboBox;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class OverviewController implements QueryTable {
 
@@ -93,14 +90,13 @@ public class OverviewController implements QueryTable {
     }
 
 
-
     private ObservableList<Expense> getAllTransactions() {
         return FXCollections.observableArrayList(
                 expenseDaoImpl.findAll()
         );
     }
 
-    private void setFXTable(ObservableList<Expense> tableContent) {
+    void setFXTable(ObservableList<Expense> tableContent) {
         setTableFields(fId, fCost, fTitle, fDate, fType, fCategory);
         FXTable.setItems(tableContent);
     }
@@ -146,7 +142,7 @@ public class OverviewController implements QueryTable {
     }
 
 
-    private void newExpenseModal() throws IOException {
+    void newExpenseModal() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/NewExpense.fxml"));
         Parent root = loader.load();
         Stage newExpenseStage = new Stage();
@@ -159,18 +155,21 @@ public class OverviewController implements QueryTable {
 
     }
 
-    private void refreshData() {
+    void refreshData() {
+
+
         ObservableList<Expense> allTransactions = getAllTransactions();
         setFXTable(allTransactions);
         FXTable.refresh();
 
         fBalance.setText(String.valueOf(expenseDaoImpl.getBalance()));
         fSpent.setText(String.valueOf(expenseDaoImpl.getSumOfExpenses()));
+        setPieChart();
 
-        
+
     }
 
-    private void setPieChart() {
+    void setPieChart() {
 
         ObservableList<PieChart.Data> piechartData = FXCollections.observableArrayList();
 
@@ -182,7 +181,7 @@ public class OverviewController implements QueryTable {
                 });
 
 
-            fPieChart.setData(piechartData);
+        fPieChart.setData(piechartData);
 
 
     }

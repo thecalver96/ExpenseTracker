@@ -5,15 +5,10 @@ import expense.model.ExpenseDaoImpl;
 import expense.model.SelectedDataModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import javax.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -47,7 +42,6 @@ public class NewExpenseController {
     public void initialize() {
 
         expenseDaoImpl = DatabaseConnection.initDB();
-        //    expenseDaoImpl = ExpenseDaoImpl.initDB();
         fType.getItems().addAll(Expense.Type.values());
         fCategory.getItems().addAll(Expense.MainCategory.values());
 
@@ -69,7 +63,7 @@ public class NewExpenseController {
 
             if (fieldValidation()) {
                 if ((selected == null)) {
-                    createExpense(null);
+                    createExpense();
                 } else {
                     updateExpense(selected);
                 }
@@ -153,8 +147,8 @@ public class NewExpenseController {
         expenseDaoImpl.persist(expense);
     }
 
-    private void createExpense(Expense expense) {
-        expense = Expense.builder()
+    private void createExpense() {
+        Expense expense = Expense.builder()
                 .title(fTitle.getText())
                 .type(fType.getValue())
                 .category(fCategory.getValue())

@@ -16,6 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @Data
+@EqualsAndHashCode
 public class Expense {
 
     public enum Type {
