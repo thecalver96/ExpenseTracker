@@ -7,17 +7,15 @@ import org.junit.jupiter.api.Assertions;
 public class ExpenseTest {
     @Test
     public void testExpenseInitialization() {
-        // Arrange
         Integer id = 1;
         String title = "Expense 1";
         double cost = 10.0;
         LocalDate date = LocalDate.now();
         Expense.Type type = Expense.Type.EXPENSE;
         Expense.MainCategory category = Expense.MainCategory.FOOD;
-        // Act
+
         Expense expense = new Expense(id, title, cost, date, type, category);
 
-        // Assert
         Assertions.assertEquals(id, expense.getId());
         Assertions.assertEquals(title, expense.getTitle());
         Assertions.assertEquals(cost, expense.getCost(), 0.01); //kerekítés miatt
@@ -35,7 +33,7 @@ public class ExpenseTest {
         LocalDate date = LocalDate.now();
         Expense.Type type = Expense.Type.EXPENSE;
         Expense.MainCategory category = Expense.MainCategory.FOOD;
-        // Act
+
         Expense expense = new Expense(id, title, cost, date, type, category);
 
         expense.setId(100);

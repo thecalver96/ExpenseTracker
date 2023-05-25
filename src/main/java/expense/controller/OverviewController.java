@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class OverviewController implements QueryTable {
 

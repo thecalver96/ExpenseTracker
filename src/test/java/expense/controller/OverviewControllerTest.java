@@ -7,23 +7,17 @@ import expense.model.ExpenseDaoImpl;
 import guice.PersistenceModule;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Button;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
+
 import org.mockito.MockitoAnnotations;
 import org.testng.Assert;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+
 
 public class OverviewControllerTest {
 
@@ -42,7 +36,7 @@ public class OverviewControllerTest {
 
     @Test
     public void TestInitialize() {
-        // Arrange
+
         Expense expense1 = Expense.builder()
 
                 .title("first")

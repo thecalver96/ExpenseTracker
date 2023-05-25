@@ -6,11 +6,7 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 
-/*
- *
- * Expense entity class
- * Represents one 'Expense' as transactions
- */
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

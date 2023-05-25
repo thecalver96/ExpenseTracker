@@ -1,12 +1,9 @@
 package expense.model;
 
 import com.google.inject.persist.Transactional;
-import jpa.GenericJpaDao;
 
-import javax.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.DoubleStream;
 
 public interface ExpenseDao {
     @Transactional

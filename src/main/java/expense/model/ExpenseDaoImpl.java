@@ -1,10 +1,6 @@
 package expense.model;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import guice.PersistenceModule;
 import jpa.GenericJpaDao;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.TypedQuery;
 import java.time.LocalDate;
